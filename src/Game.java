@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-public class Game extends Observable {
+public class  Game extends Observable {
 
     private int width = 600;
     private int height = 600;
@@ -11,9 +11,13 @@ public class Game extends Observable {
     private Thread mainLoop;
     private boolean alive;
 
+    private BulletPool bulletPool = BulletPool.getInstance();
+//    private BulletPool bulletPool;
+
     public Game() {
         alive = true;
         bullets = new ArrayList<Bullet>();
+        BulletPool bulletPool = BulletPool.getInstance();
         mainLoop = new Thread() {
             @Override
             public void run() {
@@ -55,6 +59,7 @@ public class Game extends Observable {
         }
         for(Bullet bullet : toRemove) {
             bullets.remove(bullet);
+            bulletPool.returnBullet(bullet);
         }
     }
 
@@ -71,13 +76,22 @@ public class Game extends Observable {
     }
 
     public void burstBullets(int x, int y) {
-        bullets.add(new Bullet(x, y, 1, 0));
-        bullets.add(new Bullet(x, y, 0, 1));
-        bullets.add(new Bullet(x, y, -1, 0));
-        bullets.add(new Bullet(x, y, 0, -1));
-        bullets.add(new Bullet(x, y, 1, 1));
-        bullets.add(new Bullet(x, y, 1, -1));
-        bullets.add(new Bullet(x, y, -1, 1));
-        bullets.add(new Bullet(x, y, -1, -1));
+//        bullets.add(new Bullet(x, y, 1, 0));
+//        bullets.add(new Bullet(x, y, 0, 1));
+//        bullets.add(new Bullet(x, y, -1, 0));
+//        bullets.add(new Bullet(x, y, 0, -1));
+//        bullets.add(new Bullet(x, y, 1, 1));
+//        bullets.add(new Bullet(x, y, 1, -1));
+//        bullets.add(new Bullet(x, y, -1, 1));
+//        bullets.add(new Bullet(x, y, -1, -1));
+
+        bullets.add(bulletPool.acquireBullets(x, y, 1, 0));
+        bullets.add(bulletPool.acquireBullets(x, y, 0, 1));
+        bullets.add(bulletPool.acquireBullets(x, y, -1, 0));
+        bullets.add(bulletPool.acquireBullets(x, y, 0, -1));
+        bullets.add(bulletPool.acquireBullets(x, y, 1, 1));
+        bullets.add(bulletPool.acquireBullets(x, y, 1, -1));
+        bullets.add(bulletPool.acquireBullets(x, y, -1, 1));
+        bullets.add(bulletPool.acquireBullets(x, y, -1, -1));
     }
 }
